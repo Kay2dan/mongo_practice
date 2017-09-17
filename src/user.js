@@ -11,11 +11,16 @@ const UserSchema = new Schema({
          message : "Name must be longer than 2 characters."
       }
    },
-   // postCount : Number,
-   posts : [ PostSchema ]
+   likes : Number,
+   posts : [ PostSchema ],
+   blogPosts : [{
+      type : Schema.Types.ObjectId,
+      ref : "blogPost"
+   }]
 });
 
 UserSchema.virtual( "postCount" ).get( function(){
+   console.log( this.posts.length );
    return this.posts.length;
 });
 
