@@ -1,4 +1,5 @@
 const mongoose = require( "mongoose" );
+const assert = require( "assert" );
 const User = require( "../src/user" );
 const Comment = require( "../src/comment" );
 const BlogPost = require( "../src/blostPost" );
@@ -28,8 +29,19 @@ describe( "Associations", () => {
 
    it( "saves a relation between a user & a blogpost", ( done ) => {
       User.findOne({ name : "joe" })
+          .populate({
+            path : "blogPosts",
+            populate : {
+               path : "comments",
+               populate : {
+                  path : "user"
+               }
+            }
+          })
           .then(( user ) => {
-            console.log( user );
+            assert( user.name === "joe" );
+            assert( user.blogPosts[0].title === "Js is awesome" );
+            assert( user.blogPosts[0].comments[0].content === "I concur!" );
             done();
           });
    });
